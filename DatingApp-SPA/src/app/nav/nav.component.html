@@ -6,14 +6,15 @@
       <li class="nav-item active" routerLinkActive="active">
         <a class="nav-link" [routerLink]="['/members']">Matches</a>
       </li>
-      <li class="nav-item"  routerLinkActive="active">
+      <li class="nav-item" routerLinkActive="active">
         <a class="nav-link" [routerLink]="['/list']">Lists</a>
       </li>
-      <li class="nav-item"  routerLinkActive="active">
+      <li class="nav-item" routerLinkActive="active">
         <a class="nav-link" [routerLink]="['messages']">Messages</a>
       </li>
     </ul>
     <div *ngIf="isLoggedIn();else loginFormTempalte" class="dropdown" dropdown>
+      <span><img [src]="photoUrl"> </span>
       <a class="dropdown-toggle text-light" dropdownToggle>
         Welcome {{authService.decodedToken?.unique_name | titlecase}}
       </a>

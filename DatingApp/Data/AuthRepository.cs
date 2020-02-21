@@ -22,11 +22,11 @@ namespace DatingApp.Data
 
         public async Task<User> Login(string username, string password)
         {
-            var user = await this.dbContext.Users.FirstOrDefaultAsync(x => x.UserName == username);
+            var user = await this.dbContext.Users.Include(u => u.Photos).FirstOrDefaultAsync(x => x.UserName == username);
 
             if (user == null)
                 return null;
-                
+
             if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
                 return null;
 

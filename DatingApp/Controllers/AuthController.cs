@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using DatingApp.Data;
 using DatingApp.DTOs;
 using Microsoft.AspNetCore.Mvc;
@@ -17,9 +18,11 @@ namespace DatingApp.Controllers
     {
         private readonly IAuthRepository _repo;
         private readonly IConfiguration _config;
+        private readonly IMapper _mapper;
 
-        public AuthController(IAuthRepository repo, IConfiguration config)
+        public AuthController(IAuthRepository repo, IMapper mapper, IConfiguration config)
         {
+            this._mapper = mapper;
             this._repo = repo;
             this._config = config;
         }
@@ -40,16 +43,16 @@ namespace DatingApp.Controllers
 
         public async Task<IActionResult> Login(UserLoginDto userLoginDto)
         {
-            var user = await this._repo.Login(userLoginDto.UserName, userLoginDto.Password);
+            var userRepo = await this._repo.Login(userLoginDto.UserName, userLoginDto.Password);
 
-            if (user == null)
+            if (userRepo == null)
                 return Unauthorized();
 
             //payload
             var claims = new[]{
 
-                    new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
-                    new Claim(ClaimTypes.Name,user.UserName.ToString())
+                    new Claim(ClaimTypes.NameIdentifier,userRepo.Id.ToString()),
+                    new Claim(ClaimTypes.Name,userRepo.UserName.ToString())
             };
 
             //key 
@@ -71,11 +74,12 @@ namespace DatingApp.Controllers
 
             //generate token from jwt handler
             var token = tokenHandler.CreateToken(toeknDescriptor);
-
+            var user = _mapper.Map<UserForListDto>(userRepo);
             //return token to client 
             return Ok(new
             {
-                token = tokenHandler.WriteToken(token)
+                token = tokenHandler.WriteToken(token),
+                user
             });
         }
     }

@@ -13,8 +13,13 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     const jwtHelper = new JwtHelperService();
     const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
     if (token) {
       this.authService.decodedToken = jwtHelper.decodeToken(token);
+    }
+    if (user) {
+      this.authService.currentUser = JSON.parse(user);
+      this.authService.changePhotoUrl(this.authService.currentUser.photoUrl);
     }
   }
 }
