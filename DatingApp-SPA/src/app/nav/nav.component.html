@@ -14,7 +14,7 @@
       </li>
     </ul>
     <div *ngIf="isLoggedIn();else loginFormTempalte" class="dropdown" dropdown>
-      <span><img [src]="photoUrl"> </span>
+      <span><img [src]="photoUrl || '../assets/user.png'"> </span>
       <a class="dropdown-toggle text-light" dropdownToggle>
         Welcome {{authService.decodedToken?.unique_name | titlecase}}
       </a>

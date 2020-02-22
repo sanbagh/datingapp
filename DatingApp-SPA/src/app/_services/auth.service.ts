@@ -27,8 +27,8 @@ export class AuthService {
       })
     );
   }
-  register(model: any) {
-    return this.httpService.post(this.baseUrl + 'register', model);
+  register(user: User) {
+    return this.httpService.post(this.baseUrl + 'register', user);
   }
   isLoggedIn() {
     const token = localStorage.getItem('token');

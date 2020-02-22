@@ -1,18 +1,61 @@
-<form #registerForm="ngForm" (ngSubmit)="register()">
+<form [formGroup]= "registerForm" (ngSubmit)="register()">
   <h2 class="text-center text-primary">Sign Up</h2>
   <hr>
 
   <div class="form-group">
-    <input type="text" class="form-control" placeholder="Username" required name="username" [(ngModel)] = "model.username">
+    <label class="control-label" style="margin-right:10px">I am a: </label>
+    <label class="radio-inline">
+      <input class="mr-3" type="radio" value="male" formControlName="gender">Male
+    </label>
+    <label class="radio-inline ml-3">
+      <input class="mr-3" type="radio" value="female" formControlName="gender">Female
+    </label>
   </div>
 
   <div class="form-group">
-    <input type="password" class="form-control" placeholder="Password" required name="password" [(ngModel)] ="model.password">
+    <input type="text" [ngClass]="{'is-invalid': checkErrors('username')}"  class="form-control" placeholder="Username"  formControlName="username">
+    <div class="invalid-feedback">Please provide Username</div>
+  </div>
+
+  <div class="form-group">
+    <input [ngClass]="{'is-invalid': checkErrors('knownAs')}" class="form-control"
+      placeholder="Known as" formControlName="knownAs">
+    <div class="invalid-feedback" *ngIf="checkSpecificError('knownAs','required')">Known as is required</div>
+  </div>
+
+  <div class="form-group">
+    <input [ngClass]="{'is-invalid':checkErrors('dateOfBirth')}" class="form-control"
+      placeholder="Date of Birth" formControlName="dateOfBirth" type="text" bsDatepicker [bsConfig] = "bsConfig">
+    <div class="invalid-feedback" *ngIf="checkSpecificError('dateOfBirth', 'required')">Date of Birth is required</div>
+  </div>
+  <div class="form-group">
+    <input [ngClass]="{'is-invalid': checkErrors('city')}" class="form-control"
+      placeholder="City" formControlName="city">
+    <div class="invalid-feedback" *ngIf="checkSpecificError('city','required')">City is required</div>
+  </div>
+
+  <div class="form-group">
+    <input [ngClass]="{'is-invalid': checkErrors('country')}" class="form-control"
+      placeholder="Country" formControlName="country">
+    <div class="invalid-feedback" *ngIf="checkSpecificError('country','required')">Country is required</div>
+  </div>
+
+  <div class="form-group">
+    <input type="password" [ngClass]="{'is-invalid': checkErrors('password')}" class="form-control" placeholder="Password" formControlName="password">
+    <div class="invalid-feedback" *ngIf="checkSpecificError('password','required')">Please provide Password</div>
+    <div class="invalid-feedback" *ngIf="checkSpecificError('password','minlength')">Password must be of min length 4</div>
+    <div class="invalid-feedback" *ngIf="checkSpecificError('password','maxlength')">Password can not be more than  8 characters</div>
+  </div>
+
+  <div class="form-group">
+    <input type="password" [ngClass]="{'is-invalid': checkErrors('confirmPassword') || checkSpecificError('confirmPassword', 'mismatch','form')}" class="form-control" placeholder="Confirm Password" formControlName="confirmPassword">
+    <div class="invalid-feedback" *ngIf="checkSpecificError('confirmPassword','required')">Please provide Confirm Password</div>
+    <div class="invalid-feedback" *ngIf="checkSpecificError('confirmPassword', 'mismatch','form')">Password mismatch</div>
   </div>
 
   <div class="form-group text-center">
-    <button class="btn btn-success mr-2" type="submit">Register</button>
+    <button class="btn btn-success mr-2" [disabled] = "!registerForm.valid" type="submit">Register</button>
     <button class="btn btn-danger" type="button" (click)="cancel()">Cancel</button>
   </div>
 
-</form>
+</form> 

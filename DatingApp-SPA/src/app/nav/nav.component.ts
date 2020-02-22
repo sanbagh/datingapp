@@ -18,7 +18,8 @@ export class NavComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.authService.photoUrl.subscribe( photoUrl =>  this.photoUrl = photoUrl);
+    this.authService.currentPhotoUrl.subscribe(
+      photoUrl => this.photoUrl = photoUrl);
   }
 
   login() {
@@ -43,7 +44,7 @@ export class NavComponent implements OnInit {
     this.authService.decodedToken = null;
     this.authService.currentUser = null;
     this.model = {};
-    this.alertifyService.success('Successfully logged out.')
+    this.alertifyService.success('Successfully logged out.');
     this.router.navigate(['/home']);
   }
 }
