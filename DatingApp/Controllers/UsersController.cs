@@ -26,13 +26,21 @@ namespace DatingApp.Controllers
             this._mapper = mapper;
         }
         [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers([FromQuery]UserParams userParams)
         {
-            var users = await _datingRepository.GetUsers();
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var currrentUser = await _datingRepository.GetUser(userId);
+
+            userParams.UserId = userId;
+            if (string.IsNullOrEmpty(userParams.Gender))
+                userParams.Gender = currrentUser.Gender.ToLower() == "male" ? "female" : "male";
+
+            var users = await _datingRepository.GetUsers(userParams);
             var mappedUsers = _mapper.Map<List<UserForListDto>>(users);
+            Response.AddPagination(users.PageNumer, users.PageSize, users.TotalPages, users.TotalCount);
             return Ok(mappedUsers);
         }
-        [HttpGet("{id}",Name="GetUser")]
+        [HttpGet("{id}", Name = "GetUser")]
         public async Task<IActionResult> GetUser(int id)
         {
             var user = await _datingRepository.GetUser(id);
@@ -50,7 +58,7 @@ namespace DatingApp.Controllers
 
             if (await _datingRepository.SaveAll())
                 return NoContent();
-                
+
             throw new Exception($"updating user {id} failed on save.");
         }
     }
