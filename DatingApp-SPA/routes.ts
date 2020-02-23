@@ -10,6 +10,7 @@ import { MemberListResolver } from 'src/app/_resolvers/member-list-resolver';
 import { MemberEditComponent } from 'src/app/members/member-edit/member-edit.component';
 import { MemberEditResolver } from 'src/app/_resolvers/member-edit.resolver';
 import { PreventUnSavedChanges } from 'src/app/_guards/prevent-unsaved-changes.gaurd';
+import { ListResolver } from 'src/app/_resolvers/list.resolver';
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   {
@@ -17,7 +18,7 @@ export const routes: Routes = [
     runGuardsAndResolvers: 'always',
     canActivate: [AuthGuard],
     children: [
-      { path: 'list', component: ListComponent },
+      { path: 'list', component: ListComponent , resolve: {users: ListResolver}},
       {
         path: 'members',
         component: MemberListComponent,

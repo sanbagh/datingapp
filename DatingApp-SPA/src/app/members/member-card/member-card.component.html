@@ -3,7 +3,7 @@
     <img src="{{user.photoUrl || '../../assets/user.png' }}" class="card-img-top" alt="photo">
     <ul class="list-inline member-icons animate text-center">
       <li class="list-inline-item"><button class="btn btn-primary" [routerLink]="['/members/', user.id]"><li class="fa fa-user"></li></button></li>
-      <li class="list-inline-item"><button class="btn btn-primary"><li class="fa fa-heart"></li></button></li>
+      <li class="list-inline-item"><button class="btn btn-primary" (click)="sendLike(user.id)"><li class="fa fa-heart"></li></button></li>
       <li class="list-inline-item"><button class="btn btn-primary"><li class="fa fa-envelope"></li></button></li>
     </ul>
   </div>
