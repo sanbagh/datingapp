@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -34,6 +35,30 @@ namespace DatingApp.Controllers
             if (message == null)
                 return NotFound();
             return Ok(message);
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetMessagesForUser(int userId, [FromQuery] MessageParams messageParams)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                return Unauthorized();
+            messageParams.UserId = userId;
+            var messages = await _repo.GetMessages(messageParams);
+            Response.AddPagination(messages.PageNumer, messages.PageSize, messages.TotalPages, messages.TotalCount);
+            var messagesToReturn = _mapper.Map<IEnumerable<MessageToReturnDto>>(messages);
+
+            return Ok(messagesToReturn);
+        }
+        [HttpGet("thread/{recipientId}")]
+        public async Task<IActionResult> GetMessagesThread(int userId, int recipientId)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                return Unauthorized();
+            var user = await _repo.GetUser(recipientId);
+            if (user == null)
+                return BadRequest("Recipient is not found");
+            var messages = await _repo.GetMessagesThread(userId, recipientId);
+            var messagesToReturn = _mapper.Map<IEnumerable<MessageToReturnDto>>(messages);
+            return Ok(messagesToReturn);
         }
         [HttpPost]
         public async Task<IActionResult> CreateMessage(int userId, MessageForCreationDto messageForCreationDto)

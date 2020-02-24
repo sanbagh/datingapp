@@ -103,7 +103,7 @@ namespace DatingApp.Data
                 case "Inbox":
                     message = message.Where(m => m.RecipientId == messageParams.UserId);
                     break;
-                case "OutBox":
+                case "Outbox":
                     message = message.Where(m => m.SenderId == messageParams.UserId);
                     break;
                 default:
@@ -114,9 +114,14 @@ namespace DatingApp.Data
             return await PagedList<Message>.CreateAsync(message, messageParams.PageNumber, messageParams.PageSize);
 
         }
-        public Task<IEnumerable<Message>> GetMessagesThread(int userId, int recipientId)
+        public async Task<IEnumerable<Message>> GetMessagesThread(int userId, int recipientId)
         {
-            throw new NotImplementedException();
+            var messages = await _dataContext.Messages.Include(m => m.Sender).ThenInclude(p => p.Photos)
+                            .Include(m => m.Recipient).ThenInclude(p => p.Photos)
+                            .Where(m => (m.SenderId == userId && m.RecipientId == recipientId)
+                            || (m.SenderId == recipientId && m.RecipientId == userId)).
+                            OrderByDescending(m => m.MessageSent).ToListAsync();
+                return messages;
         }
     }
 }

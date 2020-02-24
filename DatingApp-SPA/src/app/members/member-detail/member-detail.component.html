@@ -27,14 +27,14 @@
         <div class="card-footer">
           <div class="btn-group d-flex">
             <button class="btn btn-primary mr-1 w-100">Like</button>
-            <button class="btn btn-success w-100">Mesage</button>
+            <button class="btn btn-success w-100" (click)="selectedTab(3)">Mesage</button>
           </div>
         </div>
       </div>
     </div>
     <div class="col-sm-8">
       <div class="tab-panel">
-        <tabset class="member-tabset">
+        <tabset class="member-tabset" #memberTab>
           <tab heading="About {{ user.knownAs}}" id="tab1">
             <h4>Description</h4>
             <p>{{user.introduction}}</p>
@@ -51,6 +51,7 @@
           </tab>
           <tab heading="Messages">
             <h4>Messages</h4>
+            <app-member-messages [recipientId] = "user.id"></app-member-messages>
           </tab>
         </tabset>
       </div>
