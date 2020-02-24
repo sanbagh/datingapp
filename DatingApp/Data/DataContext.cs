@@ -12,14 +12,19 @@ namespace DatingApp.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Photo> Photos { get; set; }
         public DbSet<Like> Likes { get; set; }
-        protected override void OnModelCreating(ModelBuilder modelBuilder){
+        public DbSet<Message> Messages { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
 
-            modelBuilder.Entity<Like>().HasKey( k => new {k.LikerId, k.LikeeId});
-            modelBuilder.Entity<Like>().HasOne(u =>u.Likee).WithMany( u =>u.Likers)
+            modelBuilder.Entity<Like>().HasKey(k => new { k.LikerId, k.LikeeId });
+            modelBuilder.Entity<Like>().HasOne(u => u.Likee).WithMany(u => u.Likers)
             .HasForeignKey(k => k.LikeeId).OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Like>().HasOne(u => u.Liker).WithMany( u =>u.Likees)
-            .HasForeignKey(k =>k.LikerId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Like>().HasOne(u => u.Liker).WithMany(u => u.Likees)
+            .HasForeignKey(k => k.LikerId).OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Message>().HasOne(u => u.Sender).WithMany(u => u.MessagesSent).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Message>().HasOne(u => u.Recipient).WithMany(u => u.MessagesReceived).OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
