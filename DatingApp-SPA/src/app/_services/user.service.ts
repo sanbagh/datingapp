@@ -108,4 +108,21 @@ export class UserService {
       this.baseUrl + userId + '/messages/thread/' + recipientId
     );
   }
+  sendMessage(userId: number, message: Message) {
+    return this.httpService.post<Message>(
+      this.baseUrl + userId + '/messages',
+      message
+    );
+  }
+  deleteMessage(userId: number, messageId: number) {
+    return this.httpService.post(
+      this.baseUrl + userId + '/messages/' + messageId,
+      {}
+    );
+  }
+  markAsRead(userId: number, messageId: number) {
+    this.httpService
+      .post(this.baseUrl + userId + '/messages/' + messageId + '/read', {})
+      .subscribe();
+  }
 }

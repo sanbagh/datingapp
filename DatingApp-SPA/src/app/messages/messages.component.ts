@@ -40,13 +40,27 @@ export class MessagesComponent implements OnInit {
         this.pagination.pageSize,
         this.messageContainer
       )
-      .subscribe( paginatedResult => {
-        this.messages = paginatedResult.result;
-        this.pagination = paginatedResult.pagination;
-      }, err => this.alertifyService.error(err));
+      .subscribe(
+        paginatedResult => {
+          this.messages = paginatedResult.result;
+          this.pagination = paginatedResult.pagination;
+        },
+        err => this.alertifyService.error(err)
+      );
   }
   pageChanged($event): void {
     this.pagination.pageNumber = $event.page;
     this.loadMessages();
+  }
+  deleteMessage(messageId: number) {
+    this.alertifyService.confirm(
+      'Are you sure you want to delete message?.',
+      () =>
+        this.userService.deleteMessage(this.authService.decodedToken.nameid, messageId).subscribe(
+          next =>{
+             this.messages.splice(this.messages.findIndex(m => m.id === messageId), 1);
+             this.alertifyService.success('Message successfully deleted');
+          }
+        , err => this.alertifyService.error(err)));
   }
 }
