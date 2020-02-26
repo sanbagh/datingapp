@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using DatingApp.Data;
@@ -24,6 +25,7 @@ namespace DatingApp
                 try
                 {
                     var context = provider.GetRequiredService<DataContext>();
+                    Debug.WriteLine(context.Database);
                     context.Database.Migrate();
                     Seed.SeedUsers(context);
                 }
